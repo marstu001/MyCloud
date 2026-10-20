@@ -1,7 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Wydawanie plików z dysku (punkt 6k): pobieranie po kliknięciu nazwy, a dla obrazów/audio/wideo/PDF także wyświetlanie w przeglądarce (?inline=1).
-// Pliki leżą w katalogu dysk/ zablokowanym dla przeglądarki, więc każdy dostęp przechodzi przez ten skrypt, który sprawdza sesję i właściciela.
-// Obsługa nagłówka Range pozwala przewijać filmy i muzykę w odtwarzaczu HTML bez ściągania całego pliku.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 
@@ -32,11 +29,11 @@ if ($plik === null || !is_file($plik)) { http_response_code(404); exit('Nie ma t
 
 $nazwa  = basename($plik);
 $roz    = strtolower(pathinfo($nazwa, PATHINFO_EXTENSION));
-$inline = isset($_GET['inline']) && isset(MIME_INLINE[$roz]);                  // tylko bezpieczne typy mogą być wyświetlane w przeglądarce
+$inline = isset($_GET['inline']) && isset(MIME_INLINE[$roz]);
 $mime   = $inline ? MIME_INLINE[$roz] : 'application/octet-stream';
 $rozmiar = (int)filesize($plik);
 
-session_write_close();                                                         // nie blokujemy sesji na czas przesyłania dużego pliku
+session_write_close();
 while (ob_get_level() > 0) { ob_end_clean(); }
 if (function_exists('apache_setenv')) { @apache_setenv('no-gzip', '1'); }
 @ini_set('zlib.output_compression', '0');
@@ -45,7 +42,7 @@ if (function_exists('apache_setenv')) { @apache_setenv('no-gzip', '1'); }
 $start = 0; $koniec = $rozmiar - 1;
 if (isset($_SERVER['HTTP_RANGE']) && preg_match('/^bytes=(\d*)-(\d*)$/', trim($_SERVER['HTTP_RANGE']), $m) && ($m[1] !== '' || $m[2] !== ''))
 {
-	if ($m[1] === '') { $start = max(0, $rozmiar - (int)$m[2]); }             // bytes=-N : ostatnie N bajtów
+	if ($m[1] === '') { $start = max(0, $rozmiar - (int)$m[2]); }
 	else { $start = (int)$m[1]; if ($m[2] !== '') { $koniec = min($koniec, (int)$m[2]); } }
 	if ($start > $koniec || $start >= $rozmiar)
 	{
@@ -63,7 +60,7 @@ header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filena
 header('Content-Length: ' . ($koniec - $start + 1));
 header('Accept-Ranges: bytes');
 header('X-Content-Type-Options: nosniff');
-if ($roz !== 'pdf') { header('Content-Security-Policy: sandbox'); }            // nawet podmieniony plik nie wykona skryptu na naszej domenie (PDF-y w Chrome nie działają w piaskownicy)
+if ($roz !== 'pdf') { header('Content-Security-Policy: sandbox'); }
 header('Cache-Control: private, max-age=0, must-revalidate');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', (int)filemtime($plik)) . ' GMT');
 

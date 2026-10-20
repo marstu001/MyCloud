@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
+<?php declare(strict_types=1);
 session_start();
 if (isset($_SESSION['loggedin']))
 {
@@ -6,9 +6,9 @@ if (isset($_SESSION['loggedin']))
 	exit();
 }
 $blad  = isset($_GET['blad']) ? $_GET['blad'] : '';
-$login = isset($_GET['login']) ? $_GET['login'] : '';                          // po błędzie zostawiamy wpisany login
+$login = isset($_GET['login']) ? $_GET['login'] : '';
 $formularz = true;
-$publiczna  = true;                                                            // formularz dostępny bez logowania
+$publiczna  = true;
 require 'gora.php';
 ?>
 		<form method="post" action="add.php" enctype="multipart/form-data">

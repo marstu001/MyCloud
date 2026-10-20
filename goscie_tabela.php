@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-// Wspólna tabela prób logowania (używana przez goscie_podglad.php i goscie.php). Wiersze: [data, IP, wynik, przeglądarka, (login)].
 function nazwa_przegladarki(string $ua): string
 {
 	foreach (['Edg/' => 'Edge', 'OPR/' => 'Opera', 'Firefox/' => 'Firefox', 'Chrome/' => 'Chrome', 'Safari/' => 'Safari'] as $znacznik => $nazwa) {

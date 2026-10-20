@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-// Funkcje wspólne zadania 5: sesja, ochrona CSRF, katalogi użytkowników na dysku, typy plików, udostępnianie.
 require_once 'db.php';
 
 function sesja_start(): void
@@ -7,7 +6,6 @@ function sesja_start(): void
 	if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 }
 
-// ---------- CSRF: każda operacja zmieniająca dane (POST) musi nieść token z sesji ----------
 function csrf_token(): string
 {
 	sesja_start();
@@ -28,7 +26,6 @@ function csrf_wymagaj(): void
 	}
 }
 
-// ---------- komunikaty (flash) wyświetlane raz po przekierowaniu ----------
 function flash(string $typ, string $tekst): void
 {
 	sesja_start();
@@ -42,18 +39,14 @@ function flash_pobierz(): array
 	return $f;
 }
 
-// ---------- loginy i nazwy katalogów ----------
-/** Login staje się nazwą katalogu na serwerze, więc dopuszczamy tylko bezpieczne znaki. */
 function login_poprawny(string $login): bool
 {
 	return (bool)preg_match('/^[A-Za-z0-9_-]{1,20}$/', $login);
 }
-/** Nazwa podkatalogu: litery (także polskie), cyfry, spacja i _ ( ) . , + - ; nie może zaczynać się kropką ani kończyć spacją/kropką. */
 function nazwa_katalogu_poprawna(string $n): bool
 {
 	return (bool)preg_match('/^[\p{L}\p{N}][\p{L}\p{N} _().,+-]{0,59}$/u', $n) && !preg_match('/[ .]$/', $n);
 }
-/** Czyszczenie nazwy przesyłanego pliku: bez ścieżki, znaków sterujących i kropki na początku (nie powstanie .htaccess ani .php ukryty w katalogu). */
 function nazwa_pliku_czysta(string $n): string
 {
 	$n = basename(str_replace('\\', '/', $n));
@@ -61,7 +54,7 @@ function nazwa_pliku_czysta(string $n): string
 	$n = ltrim($n, ". \t");
 	$n = rtrim($n, ". ");
 	if ($n === '') { return ''; }
-	if (strlen($n) > 200) {                                                    // limit długości nazwy (bajty), z zachowaniem rozszerzenia
+	if (strlen($n) > 200) {
 		$roz = pathinfo($n, PATHINFO_EXTENSION);
 		$n   = mb_strcut(pathinfo($n, PATHINFO_FILENAME), 0, 190 - strlen($roz), 'UTF-8') . ($roz !== '' ? '.' . $roz : '');
 	}
@@ -72,7 +65,6 @@ function nazwa_elementu_poprawna(string $n): bool
 	return $n !== '' && $n === nazwa_pliku_czysta($n);
 }
 
-/** Rozbija ścieżkę względną "a/b/c" na segmenty; zwraca null, jeśli jest niepoprawna (np. ..). $element=true: ostatni segment może być plikiem. */
 function sciezka_segmenty(string $rel, bool $element = false): ?array
 {
 	$rel = trim($rel, '/');
@@ -88,19 +80,16 @@ function sciezka_segmenty(string $rel, bool $element = false): ?array
 	return $seg;
 }
 
-// ---------- katalogi na dysku ----------
 function dysk_upewnij_korzen(): bool
 {
 	if (!is_dir(DYSK_KATALOG) && !@mkdir(DYSK_KATALOG, 0755, true)) { return false; }
 	$ht = DYSK_KATALOG . '/.htaccess';
 	if (!is_file($ht)) {
-		@file_put_contents($ht, "# Pliki użytkowników są wydawane wyłącznie przez pobierz.php (po sprawdzeniu sesji) -- bezpośredni dostęp zablokowany\n"
-			. "Options -Indexes\n<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n");
+		@file_put_contents($ht, "Options -Indexes\n<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n");
 	}
 	if (!is_file(DYSK_KATALOG . '/index.html')) { @file_put_contents(DYSK_KATALOG . '/index.html', ''); }
 	return true;
 }
-/** Katalog macierzysty użytkownika (tworzy go, jeśli nie istnieje). Zwraca ścieżkę albo null. */
 function dysk_katalog_domowy(string $login): ?string
 {
 	if (!login_poprawny($login) || !dysk_upewnij_korzen()) { return null; }
@@ -108,7 +97,6 @@ function dysk_katalog_domowy(string $login): ?string
 	if (!is_dir($k) && !@mkdir($k, 0755)) { return null; }
 	return $k;
 }
-/** Pełna ścieżka na dysku do elementu danego użytkownika; null, jeśli wychodziłaby poza jego katalog macierzysty. */
 function dysk_pelna(string $login, array $seg): ?string
 {
 	$dom = dysk_katalog_domowy($login);
@@ -116,10 +104,9 @@ function dysk_pelna(string $login, array $seg): ?string
 	$pelna = $seg ? $dom . '/' . implode('/', $seg) : $dom;
 	$r = realpath($pelna);
 	$d = realpath($dom);
-	if ($r === false || $d === false) { return null; }                         // element nie istnieje
+	if ($r === false || $d === false) { return null; }
 	return ($r === $d || strpos($r, $d . DIRECTORY_SEPARATOR) === 0) ? $r : null;
 }
-/** Lista zawartości katalogu: [katalogi, pliki], posortowane naturalnie bez względu na wielkość liter. */
 function dysk_lista(string $katalog): array
 {
 	$kat = []; $pl = [];
@@ -133,7 +120,6 @@ function dysk_lista(string $katalog): array
 	usort($kat, $cmp); usort($pl, $cmp);
 	return [$kat, $pl];
 }
-/** Usuwa plik albo katalog razem z zawartością (najpierw pliki, potem katalog). */
 function dysk_usun(string $sciezka): bool
 {
 	if (is_file($sciezka) || is_link($sciezka)) { return @unlink($sciezka); }
@@ -144,7 +130,6 @@ function dysk_usun(string $sciezka): bool
 	}
 	return @rmdir($sciezka);
 }
-/** Nazwa dla przesyłanego pliku: jeśli taki plik już jest, dopisujemy " (1)", " (2)"... zamiast nadpisywać. */
 function dysk_wolna_nazwa(string $katalog, string $nazwa): string
 {
 	if (!file_exists($katalog . '/' . $nazwa)) { return $nazwa; }
@@ -157,14 +142,12 @@ function dysk_wolna_nazwa(string $katalog, string $nazwa): string
 	return bin2hex(random_bytes(4)) . '_' . $nazwa;
 }
 
-// ---------- typy plików ----------
 const MIME_INLINE = [
 	'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif', 'webp' => 'image/webp', 'bmp' => 'image/bmp',
 	'mp3' => 'audio/mpeg', 'ogg' => 'audio/ogg', 'oga' => 'audio/ogg', 'wav' => 'audio/wav', 'm4a' => 'audio/mp4', 'aac' => 'audio/aac', 'flac' => 'audio/flac', 'opus' => 'audio/ogg',
 	'mp4' => 'video/mp4', 'm4v' => 'video/mp4', 'webm' => 'video/webm', 'ogv' => 'video/ogg',
 	'pdf' => 'application/pdf',
 ];
-/** Rodzaj pliku wg rozszerzenia: obraz | audio | wideo | pdf | inne (inne zawsze tylko do pobrania). */
 function typ_pliku(string $nazwa): string
 {
 	$m = MIME_INLINE[strtolower(pathinfo($nazwa, PATHINFO_EXTENSION))] ?? '';
@@ -198,8 +181,6 @@ function format_rozmiaru(int $b): string
 	return number_format($b, $b < 10 ? 2 : 1, ',', ' ') . ' ' . $j[$i];
 }
 
-// ---------- udostępnianie (opcja 8c) ----------
-/** Czy $odbiorca ma dostęp do ścieżki $rel w katalogu $wlasciciel (udostępniony dokładnie ten element albo katalog nadrzędny). */
 function czy_udostepnione(mysqli $link, int $wlasciciel, int $odbiorca, string $rel): bool
 {
 	$rel = trim($rel, '/');
@@ -227,7 +208,6 @@ function usun_udostepnienia(mysqli $link, int $wlasciciel, string $rel): void
 	foreach ($ids as $id) { mysqli_query($link, 'DELETE FROM udostepnienia WHERE id = ' . (int)$id); }
 }
 
-/** Wymaga zalogowania; zwraca [id, login, admin]. */
 function wymagaj_logowania(): array
 {
 	sesja_start();
@@ -238,7 +218,6 @@ function wymagaj_logowania(): array
 	return [(int)$_SESSION['user_id'], (string)$_SESSION['username'], !empty($_SESSION['admin'])];
 }
 
-/** Adres strony dysku: własny katalog albo katalog innego użytkownika (udostępniony). */
 function url_dysk(string $rel = '', int $w = 0): string
 {
 	$q = [];

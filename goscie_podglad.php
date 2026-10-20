@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Punkt 6b: podgląd dla zalogowanego użytkownika -- daty, godziny i adresy IP udanych oraz błędnych prób logowania na jego konto.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 

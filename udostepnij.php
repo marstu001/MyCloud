@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Opcja 8c: udostępnianie plików i katalogów innym użytkownikom portalu (tylko odczyt i pobieranie), z możliwością cofnięcia.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 	elseif ($akcja === 'cofnij')
 	{
 		$id = (int)($_POST['id'] ?? 0);
-		$del = mysqli_prepare($link, 'DELETE FROM udostepnienia WHERE id = ? AND wlasciciel_id = ?');   // można cofnąć tylko własne udostępnienie
+		$del = mysqli_prepare($link, 'DELETE FROM udostepnienia WHERE id = ? AND wlasciciel_id = ?');
 		mysqli_stmt_bind_param($del, 'ii', $id, $uid);
 		mysqli_stmt_execute($del);
 		mysqli_stmt_close($del);
@@ -45,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 	exit();
 }
 
-// kto już ma dostęp
 $obecni = [];
 $q = mysqli_prepare($link, 'SELECT u.id, us.username, u.utworzono FROM udostepnienia u JOIN users us ON us.id = u.odbiorca_id WHERE u.wlasciciel_id = ? AND u.sciezka = ? ORDER BY us.username');
 mysqli_stmt_bind_param($q, 'is', $uid, $rel);
@@ -53,7 +51,6 @@ mysqli_stmt_execute($q);
 mysqli_stmt_bind_result($q, $uid_ud, $uname, $kiedy);
 while (mysqli_stmt_fetch($q)) { $obecni[] = [$uid_ud, $uname, $kiedy]; }
 mysqli_stmt_close($q);
-// pozostali użytkownicy
 $inni = [];
 $r = mysqli_query($link, 'SELECT id, username FROM users WHERE id <> ' . $uid . ' AND id NOT IN (SELECT odbiorca_id FROM udostepnienia WHERE wlasciciel_id = ' . $uid . " AND sciezka = '" . mysqli_real_escape_string($link, $rel) . "') ORDER BY username");
 while ($r && ($w = mysqli_fetch_row($r))) { $inni[] = $w; }

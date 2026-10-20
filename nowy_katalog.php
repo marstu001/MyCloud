@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Tworzenie podkatalogu (punkt 6f): formularz z nazwą + mkdir() wewnątrz katalogu macierzystego użytkownika.
-// Zgodnie z opcją 8b można zagłębiać katalogi do DYSK_MAX_GLEBOKOSC (4) poziomów.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 

@@ -1,12 +1,11 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
+<?php declare(strict_types=1);
 require_once 'lib.php';
-require_once 'avatar.php';                                                     // zapis avatara
+require_once 'avatar.php';
 
 $pass_raw  = (string)($_POST['pass'] ?? '');
 $pass2_raw = (string)($_POST['pass2'] ?? '');
 $user      = (string)($_POST['user'] ?? '');
 
-// wspólne przekierowanie z błędem -- wpisany login wraca do formularza
 $wroc = function (string $komunikat) use ($user): void {
 	header('Location: rejestruj.php?blad=' . urlencode($komunikat) . '&login=' . urlencode($user));
 	exit();
@@ -17,23 +16,22 @@ if ($user === '' || $pass_raw === '')
 {
 	$wroc('Podaj login i hasło.');
 }
-if (!login_poprawny($user))                                                    // punkt 6c.i: login staje się nazwą katalogu na serwerze
+if (!login_poprawny($user))
 {
 	$wroc('Login może mieć do 20 znaków: litery bez polskich znaków, cyfry, _ oraz - (to będzie nazwa Twojego katalogu).');
 }
-if ($pass_raw !== $pass2_raw)                                                  // hasło wpisane drugi raz musi być identyczne
+if ($pass_raw !== $pass2_raw)
 {
 	$wroc('Hasła nie są takie same. Wpisz je jeszcze raz.');
 }
 
-$link = db_polacz();                                                           // połączenie z BD
+$link = db_polacz();
 if (!$link)
 {
 	$wroc('Błąd połączenia z bazą danych.');
 }
 avatar_upewnij_kolumne($link);
 
-// sprawdzamy najpierw, czy taki login już istnieje w bazie -- unikamy duplikatów (porównanie bez względu na wielkość liter)
 $sprawdz = mysqli_prepare($link, 'SELECT id FROM users WHERE username = ?');
 mysqli_stmt_bind_param($sprawdz, 's', $user);
 mysqli_stmt_execute($sprawdz);
@@ -46,7 +44,6 @@ if ($istnieje)
 	$wroc('Użytkownik o takim loginie już istnieje. Wybierz inny login.');
 }
 
-// opcjonalny avatar -- bez pliku zostaje NULL (ikona domyślna), a użytkownik może go ustawić później
 [$avatar, $blad_avatara] = avatar_zapisz($_FILES['avatar'] ?? [], $user);
 if ($blad_avatara !== '')
 {
@@ -54,7 +51,7 @@ if ($blad_avatara !== '')
 	$wroc($blad_avatara);
 }
 
-$hash = password_hash($pass_raw, PASSWORD_DEFAULT);                            // hasło trzymane w tabeli users jako skrót
+$hash = password_hash($pass_raw, PASSWORD_DEFAULT);
 $ins  = mysqli_prepare($link, 'INSERT INTO users (username, password, avatar) VALUES (?, ?, ?)');
 mysqli_stmt_bind_param($ins, 'sss', $user, $hash, $avatar);
 $ok    = mysqli_stmt_execute($ins);
@@ -64,10 +61,9 @@ mysqli_stmt_close($ins);
 
 if ($ok)
 {
-	// punkt 6c: po pomyślnej rejestracji powstaje katalog macierzysty o nazwie takiej, jak login
 	if (dysk_katalog_domowy($user) === null)
 	{
-		mysqli_query($link, 'DELETE FROM users WHERE id = ' . (int)$id);        // bez katalogu konto nie ma sensu
+		mysqli_query($link, 'DELETE FROM users WHERE id = ' . (int)$id);
 		mysqli_close($link);
 		avatar_usun_plik($avatar);
 		$wroc('Nie udało się utworzyć katalogu macierzystego na serwerze (prawa zapisu w katalogu zadania?).');
@@ -77,5 +73,5 @@ if ($ok)
 	exit();
 }
 mysqli_close($link);
-avatar_usun_plik($avatar);                                                     // rejestracja się nie udała -- nie zostawiamy osieroconego pliku
+avatar_usun_plik($avatar);
 $wroc('Błąd podczas rejestracji: ' . $blad);

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
+<?php declare(strict_types=1);
 session_start();
 if (isset($_SESSION['loggedin']))
 {
@@ -8,7 +8,7 @@ if (isset($_SESSION['loggedin']))
 $blad = isset($_GET['blad']) ? $_GET['blad'] : '';
 $info = isset($_GET['info']) ? $_GET['info'] : '';
 $formularz = true;
-$publiczna  = true;                                                            // formularz dostępny bez logowania
+$publiczna  = true;
 require 'gora.php';
 ?>
 		<form method="post" action="weryfikuj3.php">

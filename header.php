@@ -1,7 +1,6 @@
-<?php declare(strict_types=1);  /* Ta linia musi być pierwsza */
-session_start();                                                               // header.php jest ładowany osobnym żądaniem AJAX, więc sam musi otworzyć sesję
-require_once 'avatar.php';                                                     // wyświetlanie avatara w pasku
-// Pasek nawigacji pojawia się dopiero po zalogowaniu
+<?php declare(strict_types=1);
+session_start();
+require_once 'avatar.php';
 if (!isset($_SESSION['loggedin'])) { return; }
 $admin = !empty($_SESSION['admin']);
 ?>

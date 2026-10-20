@@ -11,9 +11,9 @@ Aplikacja PHP 8 + MariaDB/MySQL do przechowywania prywatnych plików na serwerze
 - opcje dodatkowe: widok listy i miniatur, data i rozmiar plików, podkatalogi do 4 poziomów, udostępnianie plików i katalogów innym użytkownikom, lista loginów dla administratora
 
 ## Instalacja
-1. Utwórz bazę i użytkownika w panelu hostingu, wpisz dane (w tym prawdziwe hasło w miejscu `ZMIEN_HASLO`) w `db.php`.
-2. Utwórz w bazie tabele `users`, `goscieportalu`, `break_ins` i `udostepnienia` oraz konto administratora (login `admin`).
-3. Wgraj pliki na serwer. Katalog `dysk/` na pliki użytkowników powstaje automatycznie przy pierwszej rejestracji lub logowaniu.
+1. Utwórz bazę i użytkownika w panelu hostingu, wpisz dane w `db.php`.
+2. Wgraj pliki na serwer (płaska struktura, bez podkatalogów).
+3. Uruchom raz `utworz_tabele.php` (tworzy tabele, konto `admin` / `admin` i katalog `dysk/`), a następnie usuń ten plik z serwera.
 
 ## Bezpieczeństwo
 - pliki użytkowników leżą w `dysk/` z blokadą dostępu przez `.htaccess` i są wydawane wyłącznie przez `pobierz.php` po sprawdzeniu sesji

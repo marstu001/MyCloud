@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Opcja 8c: lista elementów udostępnionych mi przez innych oraz moich udostępnień (z możliwością cofnięcia).
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 

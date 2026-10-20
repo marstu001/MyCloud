@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Lista loginów użytkowników portalu (administrator) -- opcja 8d. Ten sam zestaw danych w formacie JSON dla aplikacji desktopowej: uzytkownicy.php?format=json (wymaga sesji admina).
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 if (!$admin) { flash('danger', 'Ta strona jest dostępna tylko dla administratora.'); header('Location: dysk.php'); exit(); }

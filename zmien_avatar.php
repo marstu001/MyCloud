@@ -1,14 +1,14 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
+<?php declare(strict_types=1);
 session_start();
 if (!isset($_SESSION['loggedin']))
 {
-	header('Location: index3.php');                                            // eliminacja wejścia bez autoryzacji
+	header('Location: index3.php');
 	exit();
 }
 require_once 'db.php';
 require_once 'avatar.php';
 
-$login = (string)($_SESSION['username'] ?? '');                                // login zapisany w sesji przy logowaniu (taki sam jak w tabeli users)
+$login = (string)($_SESSION['username'] ?? '');
 $link  = db_polacz();
 if (!$link)
 {
@@ -16,7 +16,6 @@ if (!$link)
 }
 avatar_upewnij_kolumne($link);
 
-// pobranie aktualnego avatara z bazy
 $pobierz = mysqli_prepare($link, 'SELECT avatar FROM users WHERE username = ?');
 mysqli_stmt_bind_param($pobierz, 's', $login);
 mysqli_stmt_execute($pobierz);
@@ -36,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
 	$komunikat = '';
 	$typ       = 'info';
-	if (($_POST['akcja'] ?? '') === 'usun')                                    // powrót do ikony domyślnej
+	if (($_POST['akcja'] ?? '') === 'usun')
 	{
 		if ($zapisz(null)) {
 			avatar_usun_plik($aktualny);
@@ -46,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 			$typ = 'blad'; $komunikat = 'Nie udało się zmienić avatara.';
 		}
 	}
-	else                                                                       // nowy avatar z pliku
+	else
 	{
 		[$nowy, $blad] = avatar_zapisz($_FILES['avatar'] ?? [], $login);
 		if ($blad !== '') {
@@ -54,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 		} elseif ($nowy === null) {
 			$typ = 'blad'; $komunikat = 'Nie wybrano pliku.';
 		} elseif ($zapisz($nowy)) {
-			avatar_usun_plik($aktualny);                                       // stary plik już niepotrzebny
+			avatar_usun_plik($aktualny);
 			$_SESSION['avatar'] = $nowy;
 			$komunikat = 'Avatar został zmieniony.';
 		} else {

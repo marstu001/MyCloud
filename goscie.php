@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Punkt 6b: rejestr wszystkich prób logowania (tabela goscieportalu) -- tylko dla administratora. Filtr po wyniku i loginie.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 if (!$admin) { flash('danger', 'Ta strona jest dostępna tylko dla administratora.'); header('Location: dysk.php'); exit(); }

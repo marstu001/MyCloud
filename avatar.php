@@ -1,9 +1,7 @@
 <?php declare(strict_types=1);
-// Obsługa avatarów użytkowników (zadanie 3): kolumna w tabeli users, zapis pliku w media/avatars/, wyświetlanie w pasku nawigacji.
 const AVATAR_KATALOG    = 'media/avatars/';
-const AVATAR_MAX_BAJTOW = 2097152;                                             // 2 MB
+const AVATAR_MAX_BAJTOW = 2097152;
 
-/** Tabela users z zadania 1 nie miała avatara -- dodajemy kolumnę przy pierwszym użyciu (dalej nic nie robi). */
 function avatar_upewnij_kolumne(mysqli $link): void
 {
 	$r = mysqli_query($link, "SHOW COLUMNS FROM users LIKE 'avatar'");
@@ -12,10 +10,6 @@ function avatar_upewnij_kolumne(mysqli $link): void
 	}
 }
 
-/**
- * Zapisuje przesłany plik (PNG lub JPEG do 2 MB) jako avatar. Zwraca [ścieżka|null, komunikat błędu].
- * Brak wybranego pliku to nie błąd: [null, ''] -- użytkownik zostaje z domyślną ikoną i może ustawić avatar później.
- */
 function avatar_zapisz(array $plik, string $login): array
 {
 	$kod = $plik['error'] ?? UPLOAD_ERR_NO_FILE;
@@ -50,7 +44,6 @@ function avatar_zapisz(array $plik, string $login): array
 	return [$docelowy, ''];
 }
 
-/** Usuwa plik avatara z dysku -- tylko jeśli leży w katalogu avatarów i ma bezpieczną nazwę. */
 function avatar_usun_plik(?string $sciezka): void
 {
 	if (is_string($sciezka) && preg_match('#^media/avatars/[A-Za-z0-9_]+\.(png|jpg)$#', $sciezka) && is_file($sciezka)) {
@@ -58,7 +51,6 @@ function avatar_usun_plik(?string $sciezka): void
 	}
 }
 
-/** Znacznik HTML avatara: zdjęcie użytkownika albo domyślna ikona, gdy nie ustawił własnego. */
 function avatar_html(?string $sciezka, int $px = 24): string
 {
 	if (is_string($sciezka) && preg_match('#^media/avatars/[A-Za-z0-9_]+\.(png|jpg)$#', $sciezka)) {

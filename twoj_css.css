@@ -1,4 +1,4 @@
-/* Wygląd zadania 3 -- ten sam co w zadaniu 2 (Bootstrap 5, ciemny pasek nawigacji, wyśrodkowane okno logowania) */
+
 body { background-color: #f0f4f8; display: flex; flex-direction: column; min-height: 100vh; }
 main { flex: 1 0 auto; }
 
@@ -15,23 +15,21 @@ main { flex: 1 0 auto; }
 .page-footer
 {
 	height:auto; width:auto; font-size:13px;
-	color:#ffffff !important;                                                  /* !important -- nadpisuje jasny kolor tekstu narzucony przez klasę bg-light Bootstrapa */
-	background-color:#2c3e50 !important;                                       /* !important -- nadpisuje jasne tło narzucone przez klasę bg-light Bootstrapa */
+	color:#ffffff !important;
+	background-color:#2c3e50 !important;
 	border:none;
 	margin-left:1px; margin-right:1px; margin-bottom:1px;
 	padding:10px;
 	text-align:center;
 }
 
-/* Formularz logowania i rejestracji -- wzorowany na przykładzie "Sign-in" z dokumentacji Bootstrap 5,
-   wyśrodkowany w pionie i w poziomie na dostępnej wysokości ekranu (między navbarem a stopką) */
 .form-signin
 {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 70px 1rem 2rem 1rem;                                              /* górny odstęp uwzględnia wysokość navbaru (position:fixed) */
+	padding: 70px 1rem 2rem 1rem;
 }
 
 .form-signin form
@@ -61,21 +59,18 @@ main { flex: 1 0 auto; }
 	border-top-right-radius: 0;
 }
 
-/* trzy pola pod sobą (login, hasło, powtórz hasło): środkowe bez zaokrągleń */
 .form-signin input[type="password"].srodek
 {
 	margin-bottom: -1px;
 	border-radius: 0;
 }
 
-/* Elementy zadania 3: wyniki poleceń, tabele wizyt, lista podpunktów */
 pre { background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:10px; overflow-x:auto; font-size:14px; }
 table.table { font-size:14px; background:#ffffff; }
 .sekcja1 h1 { color:#2c3e50; }
 .lista-zadania .list-group-item { font-size:16px; }
 .lista-zadania .card-header { background-color:#2c3e50; color:#ffffff; font-weight:600; }
 
-/* Zadanie 5: dysk sieciowy -- kafelki w widoku miniatur */
 .kafel-ikona { font-size:64px; line-height:1.1; display:block; text-decoration:none; }
 .kafel-obraz { max-height:140px; max-width:100%; object-fit:cover; }
 .kafel-wideo { width:100%; max-height:160px; background:#000; }

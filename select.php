@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Formularz wyboru plików do przesłania (punkt 6i, 6j): wersja select.php z instrukcji, rozbudowana o katalog docelowy i wiele plików naraz.
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 

@@ -1,12 +1,9 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Odbiór przesyłanych plików (punkt 6i): wersja upload.php z instrukcji, w której $target_dir to katalog macierzysty (lub podkatalog) zalogowanego użytkownika.
-// Zgodnie z poleceniem NIE ograniczamy typu ani rozmiaru plików (poza limitami PHP serwera).
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0)
 {
-	// przekroczony post_max_size -- PHP odrzuca całe żądanie razem z tokenem
 	flash('danger', 'Przesyłane pliki są większe niż limit serwera (' . ini_get('post_max_size') . ').');
 	header('Location: select.php');
 	exit();
@@ -15,7 +12,7 @@ csrf_wymagaj();
 
 $rel = trim((string)($_POST['p'] ?? ''), '/');
 $seg = sciezka_segmenty($rel);
-$target_dir = $seg === null ? null : dysk_pelna($login, $seg);                 // katalog docelowy: wewnątrz katalogu macierzystego użytkownika
+$target_dir = $seg === null ? null : dysk_pelna($login, $seg);
 if ($target_dir === null || !is_dir($target_dir)) { flash('danger', 'Niepoprawny katalog docelowy.'); header('Location: dysk.php'); exit(); }
 
 $bledy_php = [

@@ -1,10 +1,8 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */
-// Główna strona dysku sieciowego: po zalogowaniu automatycznie wyświetla zawartość katalogu macierzystego (punkt 6d),
-// a po kliknięciu nazwy podkatalogu -- jego zawartość (6e, 6h). Opcje 8a (widoki) i 8c (katalogi udostępnione przez innych).
+<?php declare(strict_types=1);
 require_once 'lib.php';
 [$uid, $login, $admin] = wymagaj_logowania();
 
-$w     = (int)($_GET['w'] ?? 0);                                               // w = id właściciela, gdy oglądamy katalog udostępniony nam przez kogoś innego
+$w     = (int)($_GET['w'] ?? 0);
 $wlasny = ($w === 0 || $w === $uid);
 if ($wlasny) { $w = 0; }
 $rel   = trim((string)($_GET['p'] ?? ''), '/');
@@ -40,7 +38,6 @@ if ($pelna === null || !is_dir($pelna))
 	exit();
 }
 
-// preferencje wyświetlania (opcja 8a) zapamiętane w sesji: widok = lista | miniatury, szczegoly = 0 | 1 (data i rozmiar)
 if (isset($_GET['widok']) && in_array($_GET['widok'], ['lista', 'miniatury'], true)) { $_SESSION['widok'] = $_GET['widok']; }
 if (isset($_GET['szczegoly'])) { $_SESSION['szczegoly'] = $_GET['szczegoly'] === '1' ? 1 : 0; }
 $widok     = $_SESSION['widok'] ?? 'lista';
@@ -48,10 +45,9 @@ $szczegoly = (int)($_SESSION['szczegoly'] ?? 0) === 1;
 
 [$katalogi, $pliki] = dysk_lista($pelna);
 
-$ostrzezenie = (string)($_SESSION['ostrzezenie'] ?? '');                       // czerwone ostrzeżenie o nieudanych próbach logowania (wyświetlane raz)
+$ostrzezenie = (string)($_SESSION['ostrzezenie'] ?? '');
 unset($_SESSION['ostrzezenie']);
 
-// adres bieżącej strony z podmienionymi opcjami widoku
 $adres = function (array $zmiany) use ($rel, $w): string {
 	$q = array_merge(array_filter(['w' => $w ?: null, 'p' => $rel !== '' ? $rel : null]), $zmiany);
 	return 'dysk.php?' . http_build_query($q, '', '&', PHP_QUERY_RFC3986);
@@ -63,7 +59,6 @@ require 'gora.php';
 foreach (flash_pobierz() as [$typ, $tekst]) { echo '<div class="alert alert-' . e($typ) . '" role="alert">' . e($tekst) . '</div>' . "\n"; }
 if ($ostrzezenie !== '') { echo '<div class="alert alert-danger" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> <strong>' . e($ostrzezenie) . '</strong></div>' . "\n"; }
 
-// okruszki: /login/podkatalog/...
 $okruchy = [];
 $lacznie = '';
 foreach ($seg as $s)
@@ -92,13 +87,11 @@ $rodzic = implode('/', array_slice($seg, 0, -1));
 
 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
 <?php
-	// ikona level up -- tylko gdy jesteśmy w podkatalogu (6h.ii, 6h.iii)
 	if ($rel !== '')
 	{
 		$gora = $wlasny ? url_dysk($rodzic) : (($rodzic !== '' && czy_udostepnione($link, $w, $uid, $rodzic)) ? url_dysk($rodzic, $w) : 'udostepnione.php');
 		echo '<a class="btn btn-outline-secondary" href="' . e($gora) . '" title="Poziom wyżej (level up)"><i class="bi bi-arrow-90deg-up"></i> Wyżej</a>';
 	}
-	// ikona nowego katalogu -- w katalogu macierzystym (oraz głębiej do 4 poziomów, opcja 8b)
 	if ($wlasny && count($seg) < DYSK_MAX_GLEBOKOSC)
 	{
 		echo '<a class="btn btn-outline-primary" href="nowy_katalog.php?p=' . e(rawurlencode($rel)) . '" title="Utwórz podkatalog"><i class="bi bi-folder-plus"></i> Nowy katalog</a>';
@@ -121,7 +114,6 @@ $rodzic = implode('/', array_slice($seg, 0, -1));
 $pusto = !$katalogi && !$pliki;
 if ($pusto) { echo '<p class="text-muted"><i class="bi bi-folder2-open"></i> Ten katalog jest pusty.</p>'; }
 
-// pomocnicze: przyciski akcji przy elemencie
 $akcje = function (string $nazwa, bool $katalog) use ($wlasny, $rel, $w): string {
 	$el  = ($rel !== '' ? $rel . '/' : '') . $nazwa;
 	$out = '';
@@ -212,7 +204,6 @@ if (!$pusto && $widok === 'lista'):
 	</div>
 </div>
 <script>
-// pełny rozmiar obrazka wyświetla się w oknie aplikacji, bez ściągania na lokalny komputer
 document.getElementById('podgladObrazu').addEventListener('show.bs.modal', function (ev) {
 	var a = ev.relatedTarget;
 	document.getElementById('podgladObraz').src = a.getAttribute('data-src');

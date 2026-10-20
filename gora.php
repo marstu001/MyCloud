@@ -1,7 +1,4 @@
 <?php declare(strict_types=1);
-// Wspólny początek stron zadania 5 (ten sam układ co w zadaniach 2-4: Bootstrap, pasek nawigacji z header.php, stopka z footer.php).
-// Przed dołączeniem ustaw $tytul (nagłówek strony). $formularz = true daje wyśrodkowane okno logowania zamiast zwykłej sekcji.
-// Zadanie 5: strony portalu są dostępne dopiero po zalogowaniu (poza formularzami logowania i rejestracji, które ustawiają $publiczna = true)
 $publiczna = $publiczna ?? false;
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 if (!$publiczna && !isset($_SESSION['loggedin']))
