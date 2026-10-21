@@ -12,6 +12,16 @@ const LIMIT_BLEDNYCH     = 3;
 const BLOKADA_SEKUND     = 60;
 const ADMIN_LOGIN        = 'admin';
 
+const DOZWOLONE_KRAJE = ['PL'];
+const ZABLOKOWANE_IP  = [];
+
+const TAJNY_KLUCZ = 'ZMIEN_KLUCZ';
+
+const MONITOR_INTERWAL_S = 10;
+const MONITOR_TIMEOUT_S  = 3;
+const AWARIA_PULS_S      = 20;
+const AWARIA_DZWIEK_S    = 40;
+
 function db_polacz(): ?mysqli
 {
 	mysqli_report(MYSQLI_REPORT_OFF);

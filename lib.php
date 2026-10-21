@@ -85,7 +85,8 @@ function dysk_upewnij_korzen(): bool
 	if (!is_dir(DYSK_KATALOG) && !@mkdir(DYSK_KATALOG, 0755, true)) { return false; }
 	$ht = DYSK_KATALOG . '/.htaccess';
 	if (!is_file($ht)) {
-		@file_put_contents($ht, "Options -Indexes\n<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n");
+		@file_put_contents($ht, "# Pliki użytkowników są wydawane wyłącznie przez pobierz.php (po sprawdzeniu sesji) -- bezpośredni dostęp zablokowany\n"
+			. "Options -Indexes\n<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n");
 	}
 	if (!is_file(DYSK_KATALOG . '/index.html')) { @file_put_contents(DYSK_KATALOG . '/index.html', ''); }
 	return true;

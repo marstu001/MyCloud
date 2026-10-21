@@ -10,10 +10,14 @@ Aplikacja PHP 8 + MariaDB/MySQL do przechowywania prywatnych plików na serwerze
 - upload i download plików dowolnego typu (bez ograniczeń typu i rozmiaru poza limitami PHP), obrazy w oknie aplikacji, odtwarzacze audio i wideo bez autostartu
 - opcje dodatkowe: widok listy i miniatur, data i rozmiar plików, podkatalogi do 4 poziomów, udostępnianie plików i katalogów innym użytkownikom, lista loginów dla administratora
 
+## Funkcje z zadań 3 i 4 (dostępne w menu aplikacji)
+- zadanie 3: geolokalizacja IP gościa, rekordy DNS i adresy IP, rejestr wizyt gości z parametrami przeglądarki (ekran, okno, kolory, język), blokada logowania spoza Polski, zestawienia unikalnych IP i ranking wejść
+- zadanie 4: monitoring usług w sieciach IP (hosty użytkownika i widok administratora, pracownicy odpowiedzialni za hosty, ikony awarii, dźwięk alarmu, asystent z animowanym awatarem), narzędzia serwerowe (netstat, phpinfo, whoami, top, ls)
+
 ## Instalacja
 1. Utwórz bazę i użytkownika w panelu hostingu, wpisz dane w `db.php`.
 2. Wgraj pliki na serwer (płaska struktura, bez podkatalogów).
-3. Uruchom raz `utworz_tabele.php` (tworzy tabele, konto `admin` / `admin` i katalog `dysk/`), a następnie usuń ten plik z serwera.
+3. Uruchom raz `utworz_tabele.php` (tworzy tabele, w tym `domeny` do monitoringu, konto `admin` / `admin` i katalog `dysk/`), a następnie usuń ten plik z serwera.
 
 ## Bezpieczeństwo
 - pliki użytkowników leżą w `dysk/` z blokadą dostępu przez `.htaccess` i są wydawane wyłącznie przez `pobierz.php` po sprawdzeniu sesji

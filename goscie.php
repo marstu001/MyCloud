@@ -8,7 +8,7 @@ $szukaj = trim((string)($_GET['login'] ?? ''));
 $link = db_polacz();
 if (!$link) { exit('Błąd połączenia z bazą danych.'); }
 
-$gdzie = []; $typy = ''; $par = [];
+$gdzie = ["wynik <> 'WIZYTA'"]; $typy = ''; $par = [];
 if (in_array($wynik, ['OK', 'BLAD', 'BLOKADA'], true)) { $gdzie[] = 'wynik = ?'; $typy .= 's'; $par[] = $wynik; }
 if ($szukaj !== '') { $gdzie[] = 'login LIKE ?'; $typy .= 's'; $par[] = '%' . $szukaj . '%'; }
 $sql = 'SELECT `datetime`, ipaddress, wynik, przegladarka, login FROM goscieportalu' . ($gdzie ? ' WHERE ' . implode(' AND ', $gdzie) : '') . ' ORDER BY id DESC LIMIT 500';

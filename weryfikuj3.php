@@ -2,6 +2,7 @@
 session_start();
 require_once 'lib.php';
 require_once 'avatar.php';
+require_once 'geo.php';
 
 $wroc = function (string $komunikat): void {
 	header('Location: index3.php?blad=' . urlencode($komunikat));
@@ -20,12 +21,22 @@ $link = db_polacz();
 if (!$link) { $wroc('Błąd połączenia z bazą danych.'); }
 avatar_upewnij_kolumne($link);
 
-$zapisz = function (string $wynik) use ($link, $ip, $wpis, $ua): void {
+$ostatni_wpis = 0;
+$zapisz = function (string $wynik) use ($link, $ip, $wpis, $ua, &$ostatni_wpis): void {
 	$q = mysqli_prepare($link, 'INSERT INTO goscieportalu (ipaddress, login, wynik, przegladarka) VALUES (?, ?, ?, ?)');
 	mysqli_stmt_bind_param($q, 'ssss', $ip, $wpis, $wynik, $ua);
 	mysqli_stmt_execute($q);
+	$ostatni_wpis = (int)mysqli_insert_id($link);
 	mysqli_stmt_close($q);
 };
+
+[$dostep, $kraj, $powod] = sprawdz_dostep_ip($ip);
+if (!$dostep)
+{
+	$zapisz('BLOKADA');
+	mysqli_close($link);
+	$wroc('Logowanie zablokowane: Twoje IP wskazuje na kraj spoza terytorium Polski' . ($kraj !== '' ? " ($kraj)" : '') . '.');
+}
 
 $q = mysqli_prepare($link, 'SELECT id, username, password, avatar, bledne, GREATEST(0, TIMESTAMPDIFF(SECOND, NOW(), blokada_do)) FROM users WHERE username = ?');
 mysqli_stmt_bind_param($q, 's', $user);
@@ -94,6 +105,7 @@ if ($katalog === null) { $wroc('Nie udało się otworzyć katalogu macierzystego
 session_regenerate_id(true);
 $_SESSION['loggedin']    = true;
 $_SESSION['user_id']     = (int)$id;
+$_SESSION['wizyta_id']   = $ostatni_wpis;
 $_SESSION['username']    = $login;
 $_SESSION['admin']       = strcasecmp($login, ADMIN_LOGIN) === 0;
 $_SESSION['avatar']      = (string)($avatar ?? '');

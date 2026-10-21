@@ -1,6 +1,10 @@
 <?php declare(strict_types=1);
 require_once 'lib.php';
+require_once 'geo.php';
 [$uid, $login, $admin] = wymagaj_logowania();
+
+$wyslij = !empty($_SESSION['wizyta_id']) && empty($_SESSION['klient_wyslany']);
+if ($wyslij) { $_SESSION['klient_wyslany'] = true; }
 
 $w     = (int)($_GET['w'] ?? 0);
 $wlasny = ($w === 0 || $w === $uid);
@@ -213,4 +217,8 @@ document.getElementById('podgladObrazu').addEventListener('hidden.bs.modal', fun
 </script>
 <?php endif; ?>
 <p class="text-muted small mt-3">Katalogów: <?php echo count($katalogi); ?>, plików: <?php echo count($pliki); ?>.</p>
+<?php if ($wyslij): ?>
+<script src="klient.js"></script>
+<script>wyslijDaneKlienta(<?php echo (int)$_SESSION['wizyta_id']; ?>, <?php echo json_encode(wizyta_token((int)$_SESSION['wizyta_id'])); ?>);</script>
+<?php endif; ?>
 <?php mysqli_close($link); require 'dol.php'; ?>
