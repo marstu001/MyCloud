@@ -1,6 +1,6 @@
 # MyCloud – dysk sieciowy
 
-Aplikacja PHP 8 + MariaDB/MySQL do przechowywania prywatnych plików na serwerze hostingowym (wzorowana na Dysku Google / OneDrive / iCloud).
+Aplikacja do przechowywania prywatnych plików na serwerze hostingowym (wzorowana na Dysku Google / OneDrive / iCloud).
 
 ## Funkcje
 - rejestracja i logowanie z sesjami, bezpieczne przechowywanie haseł
