@@ -1,25 +1,14 @@
-# MyCloud – dysk sieciowy (zadanie 5)
+# MyCloud – dysk sieciowy
 
 Aplikacja PHP 8 + MariaDB/MySQL do przechowywania prywatnych plików na serwerze hostingowym (wzorowana na Dysku Google / OneDrive / iCloud).
 
 ## Funkcje
-- rejestracja i logowanie (sesje), hasła w tabeli `users` jako skróty `password_hash`
-- rejestr prób logowania (udanych i błędnych) w tabeli `goscieportalu`
-- blokada konta na 1 minutę po 3 błędnych logowaniach, wpis w `break_ins`, czerwone ostrzeżenie po kolejnym udanym logowaniu
-- katalog macierzysty o nazwie takiej jak login, lista plików i podkatalogów, tworzenie i usuwanie, wchodzenie i wychodzenie (level up)
-- upload i download plików dowolnego typu (bez ograniczeń typu i rozmiaru poza limitami PHP), obrazy w oknie aplikacji, odtwarzacze audio i wideo bez autostartu
-- opcje dodatkowe: widok listy i miniatur, data i rozmiar plików, podkatalogi do 4 poziomów, udostępnianie plików i katalogów innym użytkownikom, lista loginów dla administratora
-
-## Funkcje z zadań 3 i 4 (dostępne w menu aplikacji)
-- zadanie 3: geolokalizacja IP gościa, rekordy DNS i adresy IP, rejestr wizyt gości z parametrami przeglądarki (ekran, okno, kolory, język), blokada logowania spoza Polski, zestawienia unikalnych IP i ranking wejść
-- zadanie 4: monitoring usług w sieciach IP (hosty użytkownika i widok administratora, pracownicy odpowiedzialni za hosty, ikony awarii, dźwięk alarmu, asystent z animowanym awatarem), narzędzia serwerowe (netstat, phpinfo, whoami, top, ls)
-
-## Instalacja
-1. Utwórz bazę i użytkownika w panelu hostingu, wpisz dane w `db.php`.
-2. Wgraj pliki na serwer (płaska struktura, bez podkatalogów).
-3. Uruchom raz `utworz_tabele.php` (tworzy tabele, w tym `domeny` do monitoringu, konto `admin` / `admin` i katalog `dysk/`), a następnie usuń ten plik z serwera.
-
-## Bezpieczeństwo
-- pliki użytkowników leżą w `dysk/` z blokadą dostępu przez `.htaccess` i są wydawane wyłącznie przez `pobierz.php` po sprawdzeniu sesji
-- zapytania SQL przez prepared statements, formularze zmieniające dane chronione tokenem CSRF
-- ścieżki walidowane (brak `..`, maksymalnie 4 poziomy), brak wykonywania przesłanych plików
+- rejestracja i logowanie z sesjami, bezpieczne przechowywanie haseł
+- rejestr prób logowania, blokada konta po trzech błędnych próbach, ostrzeżenie o nieudanych próbach po kolejnym logowaniu
+- katalog macierzysty każdego użytkownika, lista plików i podkatalogów, tworzenie i usuwanie katalogów, nawigacja po strukturze
+- wysyłanie i pobieranie plików dowolnego typu, podgląd obrazów, odtwarzacze audio i wideo
+- widok listy i miniatur, data i rozmiar plików, udostępnianie plików i katalogów innym użytkownikom
+- panel administratora: lista użytkowników, rejestr logowań, zdarzenia włamań
+- geolokalizacja adresu IP gościa, rejestr wizyt, blokada logowania spoza wybranych krajów
+- monitoring dostępności usług sieciowych z alarmem dźwiękowym i asystentem
+- narzędzia serwerowe: informacje o PHP, status usług, obciążenie serwera
