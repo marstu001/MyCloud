@@ -37,7 +37,6 @@ require_once 'goscie_tabela.php';
 	</div>
 	<div class="col-4 col-sm-3"><button class="btn btn-primary w-100" type="submit"><i class="bi bi-funnel"></i> Filtruj</button></div>
 </form>
-<p class="text-muted">Najnowsze 500 wpisów tabeli <code>goscieportalu</code>.</p>
 <?php
 tabela_logowan($wiersze, true);
 require 'dol.php';

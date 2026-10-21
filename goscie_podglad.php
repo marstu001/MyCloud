@@ -17,7 +17,6 @@ $tytul = 'Moje logowania';
 require 'gora.php';
 require_once 'goscie_tabela.php';
 ?>
-<p class="text-muted">Ostatnie 200 prób logowania na konto <strong><?php echo e($login); ?></strong>. Jeśli widzisz próby, których nie wykonywałeś, zmień hasło i zgłoś to administratorowi.</p>
 <?php
 tabela_logowan($wiersze, false);
 require 'dol.php';

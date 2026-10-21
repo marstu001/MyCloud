@@ -3,7 +3,7 @@ date_default_timezone_set('Europe/Warsaw');
 
 const DB_HOST = 'localhost';
 const DB_USER = 'srv126134_z5';
-const DB_PASS = 'ZMIEN_HASLO';
+const DB_PASS = 'Zadanie5Test2026';
 const DB_NAME = 'srv126134_z5';
 
 const DYSK_KATALOG       = __DIR__ . '/dysk';
@@ -15,7 +15,7 @@ const ADMIN_LOGIN        = 'admin';
 const DOZWOLONE_KRAJE = ['PL'];
 const ZABLOKOWANE_IP  = [];
 
-const TAJNY_KLUCZ = 'ZMIEN_KLUCZ';
+const TAJNY_KLUCZ = 'f285239340b37dd58da6b4866a52cf628450e2a2f695af2e';
 
 const MONITOR_INTERWAL_S = 10;
 const MONITOR_TIMEOUT_S  = 3;

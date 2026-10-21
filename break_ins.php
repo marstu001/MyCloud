@@ -13,7 +13,6 @@ mysqli_close($link);
 $tytul = 'Włamania (break_ins)';
 require 'gora.php';
 ?>
-<p class="text-muted">Zdarzenia, w których ktoś trzykrotnie z rzędu błędnie podał hasło do konta (konto jest wtedy blokowane na <?php echo (int)BLOKADA_SEKUND; ?> s). Na podstawie tych danych można tworzyć białe i czarne listy adresów IP.</p>
 <?php if (!$wiersze): ?>
 <p class="text-muted">Brak zarejestrowanych zdarzeń.</p>
 <?php else: ?>

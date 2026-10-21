@@ -1,10 +1,9 @@
 <?php declare(strict_types=1);
 if (session_status() !== PHP_SESSION_ACTIVE) { @session_start(); }
 ?>
+<?php if (!empty($dzwiek_panel)): ?>
 	<footer class="page-footer mt-auto bg-light border-primary">
 		<div class="container-fluid d-flex flex-wrap align-items-center gap-2">
-			<span>Stube &ndash; Programowanie aplikacji sieciowych &ndash; Zadanie 5. MyCloud &ndash; dysk sieciowy (z funkcjami zadań 3 i 4)</span>
-
 			<span id="dzwiek-panel" class="ms-auto d-flex align-items-center gap-2">
 				<button type="button" id="dzwiek-przycisk" class="btn btn-sm btn-outline-secondary d-flex align-items-center p-1" title="Włącz / wyłącz dźwięk alarmu" aria-label="Włącz lub wyłącz dźwięk alarmu">
 					<svg id="ikona-dzwiek-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
@@ -21,6 +20,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) { @session_start(); }
 			</span>
 		</div>
 	</footer>
+<?php endif; ?>
 
 <?php if (isset($_SESSION['loggedin'])): ?>
 	<div class="offcanvas offcanvas-end" tabindex="-1" id="asystent" aria-labelledby="asystent-tytul">

@@ -28,5 +28,4 @@ require 'gora.php';
 <?php endforeach; ?>
 	</tbody>
 </table></div>
-<p class="text-muted small">Dane w formacie JSON: <a href="uzytkownicy.php?format=json">uzytkownicy.php?format=json</a></p>
 <?php require 'dol.php'; ?>

@@ -15,4 +15,4 @@ require 'gora.php';
 </p>
 <div id="stan-hostow"><div class="text-muted">Ładowanie stanu hostów…</div></div>
 <script>$(function () { startMonitor('tabela_stan_admin.php', 'stan-hostow', <?php echo MONITOR_INTERWAL_S * 1000; ?>); });</script>
-<?php require 'dol.php'; ?>
+<?php $dzwiek_panel = true; require 'dol.php'; ?>
